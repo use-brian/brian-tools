@@ -11,8 +11,8 @@ sidanclaw-tools/
 
 ## Related repositories
 
-- [`sidan-lab/sidanclaw-kb-template`](https://github.com/sidan-lab/sidanclaw-kb-template) — GitHub template for a team knowledge base repo. Click **Use this template** to scaffold one.
-- [`@sidan-lab/sidanclaw-kb`](https://github.com/sidan-lab/sidanclaw/tree/main/packages/sidanclaw-kb) — shared parser + lint package, powering both the backend sync worker and the public `kb lint` CLI (`npx @sidan-lab/sidanclaw-kb lint ./my-team-kb`).
+- [`sidanclaw/sidanclaw-kb-template`](https://github.com/sidanclaw/sidanclaw-kb-template) — GitHub template for a team knowledge base repo. Click **Use this template** to scaffold one.
+- [`@sidanclaw/sidanclaw-kb`](https://github.com/sidanclaw/sidanclaw/tree/main/packages/sidanclaw-kb) — shared parser + lint package, powering both the backend sync worker and the public `kb lint` CLI (`npx @sidanclaw/sidanclaw-kb lint ./my-team-kb`).
 
 ---
 

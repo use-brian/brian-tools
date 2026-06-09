@@ -18,7 +18,7 @@ This skill covers the **parser contract** (frontmatter, paths, wikilinks, sensit
 
 ## Fast paths
 
-- **New KB:** [`sidan-lab/sidanclaw-kb-template`](https://github.com/sidan-lab/sidanclaw-kb-template) — click **Use this template** (or `gh repo create --template sidan-lab/sidanclaw-kb-template`). Edit the meta files, push, connect in team settings.
+- **New KB:** [`sidanclaw/sidanclaw-kb-template`](https://github.com/sidanclaw/sidanclaw-kb-template) — click **Use this template** (or `gh repo create --template sidanclaw/sidanclaw-kb-template`). Edit the meta files, push, connect in team settings.
 - **Ingest from any existing source** — a `docs/` tree, Notion, Confluence, Google Docs, Slack, pasted emails, whiteboard photos, meeting transcripts — use the Ingest workflow below. The model is the adapter; no source-specific tooling.
 
 ## Scope
@@ -178,7 +178,7 @@ Two entries pay for themselves many times over. The template ships starters — 
 
 ### 6. Audit
 
-Run `npx @sidan-lab/sidanclaw-kb lint <path>` (or `--json` / `--strict` in CI). The sync worker runs the same checks server-side and logs findings, so issues surface even without the CLI — but lint locally first to catch them before push. Manual spot-checks for anything lint doesn't cover:
+Run `npx @sidanclaw/sidanclaw-kb lint <path>` (or `--json` / `--strict` in CI). The sync worker runs the same checks server-side and logs findings, so issues surface even without the CLI — but lint locally first to catch them before push. Manual spot-checks for anything lint doesn't cover:
 
 - [ ] Every directory has an `index.md`
 - [ ] Every entry has `title`, `description`, `sensitivity`, ≥1 tag
