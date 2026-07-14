@@ -1,12 +1,12 @@
 ---
 name: kb-author
-description: Convert internal documentation (architecture docs, specs, runbooks) or any other source — Notion, Confluence, Google Docs, pasted emails, meeting transcripts — into sidanclaw knowledge-base markdown entries. Use when the user wants to seed or extend a team knowledge base, ingest from an existing source, author a new entry, reorganize existing KB content, or audit KB hygiene.
+description: Convert internal documentation (architecture docs, specs, runbooks) or any other source — Notion, Confluence, a Google Drive folder (crawled live via the Drive MCP connector), Google Docs, pasted emails, meeting transcripts — into sidanclaw knowledge-base markdown entries. Use when the user wants to seed or extend a team knowledge base, ingest from an existing source, author a new entry, reorganize existing KB content, or audit KB hygiene.
 license: MIT
 compatibility: Designed for sidanclaw
 metadata:
   author: sidanclaw
   category: productivity
-  when_to_use: When the user wants to ingest content from any source into a KB, author a new entry, restructure an existing KB, or audit KB hygiene. Skip when the user is asking general writing questions unrelated to the KB sync format.
+  when_to_use: When the user wants to ingest content from any source into a KB (including pulling a shared Google Drive folder), author a new entry, restructure an existing KB, or audit KB hygiene. Skip when the user is asking general writing questions unrelated to the KB sync format.
   tags: official
 ---
 
@@ -120,6 +120,7 @@ Use this to populate a KB from an existing body of knowledge — wherever it liv
 | Markdown tree | Read files directly, or have the user paste. |
 | Notion | Notion connector, or ask for markdown export / paste. |
 | Confluence | Ask for HTML/PDF export; plan for lossy conversion. |
+| Google Drive folder | Drive MCP connector (`search_files` / `read_file_content`) — see [Google Drive ingestion](#google-drive-ingestion). Fallback: user downloads/exports and you read locally. |
 | Google Doc / Slack / email | User pastes; preserve headings, ignore formatting cruft. |
 | Whiteboard photo / diagram / slides | Capture the *information*, not the pixels. |
 | Meeting transcript | Summarize with the user; author entries for each decision / spec, not line-by-line. |
@@ -158,7 +159,7 @@ Every entry needs at minimum: `title`, `description`, `tags`, `sensitivity`. For
 - **Tags** — 3-6. Mix kind (`spec`, `runbook`, `reference`, `decision`, `glossary`) + domain (`auth`, `billing`, `infra`). Match `meta/tags.md`.
 - **Sensitivity** — see the tier rules above. Don't let omission be a silent decision.
 
-Optional: `status` (`stable` / `proposed` / `deprecated`), `owner`, `last_reviewed`, `source`.
+Optional: `status` (`stable` / `proposed` / `deprecated`), `owner`, `last_reviewed`, `source`. Entries distilled from an external system of record (Google Drive, Notion, a wiki) also carry `source_url` — see [Source pointers](#source-pointers-distill-dont-mirror).
 
 ### 4. Rewrite cross-references
 
@@ -188,6 +189,60 @@ Run `npx @sidanclaw/sidanclaw-kb lint <path>` (or `--json` / `--strict` in CI). 
 - [ ] Every `index.md` tier ≥ highest sub-entry tier named in its body
 - [ ] No confidential-shaped strings (customer names, GCP project IDs, internal hostnames) in `public`/`internal` bodies
 - [ ] No secrets or tokens in any entry
+- [ ] Source-pointed entries: `source_url` in frontmatter **and** a visible `> **Source:**` line in the body; URLs are canonical file-ID form with no `?usp=`/`ouid=` cruft
+
+## Google Drive ingestion
+
+Use this when the knowledge lives in a shared Google Drive folder (the common client-onboarding case: "here's our Drive, make the assistant know our company"). Drive stays the **system of record**; the KB is the distilled, queryable layer over it. You are not migrating the client off Drive — every entry points back to the original file.
+
+**Tooling.** The Google Drive MCP connector: `search_files` (structured queries, `parentId = '<folderId>'` for listing), `get_file_metadata`, `read_file_content` (returns a text representation of Docs, Slides, Sheets, pdf, docx, pptx, xlsx, and common images). In Claude Code, the user authenticates via `/mcp`. No browser automation — the metadata API is the linkage.
+
+### Phase 1 — crawl to a manifest (metadata only)
+
+Breadth-first from the root folder id: `search_files` with `parentId = '<id>'`, paginating via `nextPageToken`; queue every `application/vnd.google-apps.folder` child. Record per item: path-from-root, title, id, mimeType, size, modifiedTime, owner, viewUrl. **Do not read any file content in this phase** — the manifest is what you bucket against, and content reads on a corpus you haven't sized yet waste the budget. Large trees (hundreds of folders): delegate the crawl to a subagent with explicit caps and have it write the manifest to disk.
+
+### Phase 2 — bucket with Drive-specific rules
+
+Apply the survey table above, plus:
+
+| Drive pattern | Action |
+|---|---|
+| Photo albums, media, design-asset folders | Skip content. At most one pointer entry ("event photos live here") in the drive index. |
+| Per-cohort / per-semester / per-year copies of the same artifact (orientation decks, dashboards) | Distill **one** durable entry from the latest instance ("how onboarding runs"); pointer-list the instances. Never one entry per copy. |
+| Third-party copyrighted material (books, purchased reports) | Never ingest content into the KB. Omit, or a bare pointer with a rights note. |
+| Files owned by personal accounts (interns, ex-staff) | Ingest normally, but flag in `sources-and-open-questions`: the link dies if that account revokes sharing. |
+| Working drafts superseded by a final | Pointer from the final's entry; don't distill the draft. |
+
+### Phase 3 — extract and distill
+
+`read_file_content` on the files that survived bucketing. **The entry answers; the pointer verifies.** Distill the durable facts into the body — never mirror the document. For data-heavy files (spreadsheets, norm tables), the entry says what the file contains and when to open it, nothing more. "Extract as much knowledge as possible" means *coverage of the corpus*, not verbatim volume: every surviving file should be represented by an entry, a line in a shared entry, or a drive-index row.
+
+### Source pointers (distill, don't mirror)
+
+Every entry distilled from a Drive file carries the pointer **twice**:
+
+```yaml
+source_url: https://docs.google.com/document/d/<fileId>/edit
+source_modified: 2026-06-04        # Drive modifiedTime at ingest
+last_reviewed: 2026-07-14          # when a human/agent last verified the distillation
+```
+
+```markdown
+> **Source:** [June Career Webinar (Google Docs)](https://docs.google.com/document/d/<fileId>/edit)
+```
+
+The body line is load-bearing, not decoration: `readKnowledgeEntry` returns the entry **body**, so the visible Source line is what lets the assistant hand staff the original for further study ("the full deck is here"). Frontmatter-only pointers are invisible at read time. This mirrors the `> **Source of truth:**` convention in sidanclaw's own KB.
+
+Rules:
+
+- **Canonical URLs only.** `https://docs.google.com/document/d/<id>/edit` (Docs/Sheets/Slides) or `https://drive.google.com/file/d/<id>/view` (binary). Strip `?usp=`, `&ouid=` cruft. File-ID URLs survive renames and moves; only trash-and-recreate breaks them.
+- **Multi-source entries** list every source under one `> **Sources:**` block; `source_url` holds the primary.
+- **ACLs are a feature, not a bug.** The link opens only for staff with Drive access to that file — raw-file access control stays in Drive where the client manages it. The entry's own `sensitivity` governs the distilled text: don't distill more into the body than the tier should carry.
+- **Staleness is explicit.** The entry is true as of `last_reviewed`; the pointer is authoritative beyond that. A later hygiene job can diff Drive `modifiedTime` against `source_modified` to flag drifted entries.
+
+### The drive index
+
+Author one `drive-index.md` entry (or per-domain siblings for big corpora): the folder tree with one line + pointer per surviving file, including the skipped-but-pointable ones (photo folders, archives). This is the discoverability backstop — even a file nobody distilled is findable through `searchKnowledge` via its index row.
 
 ## Single new entry
 
@@ -222,3 +277,5 @@ One-shot audits. `kb lint` automates all of these against the filesystem; the in
 7. **Downgrading sensitivity to make search work.** The fix is raising assistant `clearance` or splitting the entry, not lowering the tier.
 8. **Public index naming confidential children in body.** Link text is user-readable — names leak even when the target is filtered.
 9. **Assuming the write-stamp protects repo authoring.** It doesn't. Repo frontmatter is literal at sync time.
+10. **Mirroring a source document instead of distilling it.** A KB entry that pastes the deck verbatim rots the moment the deck changes, and buries the retrieval signal. Distill; let the `> **Source:**` pointer carry the rest.
+11. **Source pointer only in frontmatter.** `readKnowledgeEntry` returns the body — an assistant can't hand the user a link it never sees. The visible `> **Source:**` line is the contract.
