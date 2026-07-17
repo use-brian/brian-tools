@@ -2,9 +2,9 @@
 name: gsheets-formatting
 description: Base skill for Google Sheets authoring. Before any create or edit call, sample the user's existing sheets, learn their formatting conventions (headers, freeze rows, column widths, number formats, tab colors, dropdown vocabularies, banding, naming), and reapply them to the new work. Use whenever the assistant is about to call googleSheetsCreate, googleSheetsWriteRange, googleSheetsFormat, or googleSheetsBatchUpdate — it is the formatting guide every other sheets operation inherits from.
 license: MIT
-compatibility: Designed for sidanclaw
+compatibility: Designed for Use Brian
 metadata:
-  author: sidanclaw
+  author: Use Brian
   category: productivity
   when_to_use: Activate before any Google Sheets create or edit — creating a new tracker, appending to an existing sheet, polishing after a write, or running a batchUpdate. Skip when the user is only reading data, only needs a link, or has given an explicit, self-contained formatting spec that overrides convention.
   requires_connectors: gdrive
@@ -26,7 +26,7 @@ The user has a taste they may not be able to articulate. They can describe *cont
 - **Decide what data belongs in a sheet.** That's the user's call — this skill owns the *look*, not the *content*.
 - **Create non-sheet artifacts.** Docs go to `googleDocsCreate`, Slides to `googleSlidesCreatePresentation`. A "tracker" in a Doc table is a different skill.
 - **Edit a user-owned file the assistant didn't create without picker consent.** The `gdrive` connector uses `drive.file` scope — unpicked files return 404. If the user references a sheet you can't read, ask them to add it via the picker.
-- **Parse *cell-level* visual formatting from the typed read path today.** Sheet-level formatting (theme, tab color, freezes, banding, conditional rules, Tables) IS returned by the default `spreadsheets.get` and is the primary "learn" source — see below. Only per-cell `userEnteredFormat` (individual fills, fonts, borders) needs `includeGridData=true` or a `fields` mask, which sidanclaw's `googleSheetsGetInfo(id)` wrapper does not expose yet.
+- **Parse *cell-level* visual formatting from the typed read path today.** Sheet-level formatting (theme, tab color, freezes, banding, conditional rules, Tables) IS returned by the default `spreadsheets.get` and is the primary "learn" source — see below. Only per-cell `userEnteredFormat` (individual fills, fonts, borders) needs `includeGridData=true` or a `fields` mask, which Use Brian's `googleSheetsGetInfo(id)` wrapper does not expose yet.
 
 ## Tool map
 
@@ -146,7 +146,7 @@ GET /v4/spreadsheets/{id}?fields=sheets(properties,data.rowData.values(userEnter
 
 or `?includeGridData=true` for the full grid. `userEnteredFormat` is the `CellFormat` resource: `numberFormat`, `backgroundColorStyle`, `borders`, `padding`, `horizontalAlignment`, `verticalAlignment`, `wrapStrategy`, `textFormat.{bold, italic, strikethrough, underline, fontFamily, fontSize, foregroundColorStyle}`. `effectiveFormat` shows conditional-rule-composed rendering (read-only).
 
-Replay via `repeatCell` (for uniform ranges like a header row) or `updateCells` (per-cell). **Blocked today** by sidanclaw's `googleSheetsGetInfo` not accepting `fields`/`includeGridData` — see Gaps to flag upstream.
+Replay via `repeatCell` (for uniform ranges like a header row) or `updateCells` (per-cell). **Blocked today** by Use Brian's `googleSheetsGetInfo` not accepting `fields`/`includeGridData` — see Gaps to flag upstream.
 
 ### Mode 4 — Mechanical transfer (`copyPaste PASTE_FORMAT`) — limited shortcut
 
@@ -228,7 +228,7 @@ Other sheets skills (CRM-tracker, meeting-notes-log, weekly-metrics) should **in
 
 ## Gaps to flag upstream
 
-Two sidanclaw tool lifts would materially increase this skill's confidence on visual polish. Record them in an issue, don't pretend the skill has them:
+Two Use Brian tool lifts would materially increase this skill's confidence on visual polish. Record them in an issue, don't pretend the skill has them:
 
 1. **`googleSheetsGetInfo` should accept `fields?: string` and `includeGridData?: boolean`.** The underlying `spreadsheets.get` already supports both; exposing them lets the skill read `userEnteredFormat`, `bandedRanges`, and `conditionalFormats` without any workaround.
 2. **A `googleSheetsCopyTabTo` (or equivalent) wrapping `spreadsheets.sheets.copyTo`.** Enables cross-spreadsheet template duplication — the highest-fidelity way to seed a new file from a reference in another file.

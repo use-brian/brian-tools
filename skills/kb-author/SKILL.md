@@ -1,10 +1,10 @@
 ---
 name: kb-author
-description: Convert internal documentation (architecture docs, specs, runbooks) or any other source — Notion, Confluence, a Google Drive folder (crawled live via the Drive MCP connector), Google Docs, pasted emails, meeting transcripts — into sidanclaw knowledge-base markdown entries. Use when the user wants to seed or extend a team knowledge base, ingest from an existing source, author a new entry, reorganize existing KB content, or audit KB hygiene.
+description: Convert internal documentation (architecture docs, specs, runbooks) or any other source — Notion, Confluence, a Google Drive folder (crawled live via the Drive MCP connector), Google Docs, pasted emails, meeting transcripts — into Use Brian knowledge-base markdown entries. Use when the user wants to seed or extend a team knowledge base, ingest from an existing source, author a new entry, reorganize existing KB content, or audit KB hygiene.
 license: MIT
-compatibility: Designed for sidanclaw
+compatibility: Designed for Use Brian
 metadata:
-  author: sidanclaw
+  author: Use Brian
   category: productivity
   when_to_use: When the user wants to ingest content from any source into a KB (including pulling a shared Google Drive folder), author a new entry, restructure an existing KB, or audit KB hygiene. Skip when the user is asking general writing questions unrelated to the KB sync format.
   tags: official
@@ -12,18 +12,18 @@ metadata:
 
 # Knowledge Base Authoring
 
-Author markdown files for a sidanclaw team knowledge base — the GitHub repo the sync worker mirrors into `knowledge_entries`. The assistant queries them via `searchKnowledge` / `browseKnowledge` / `readKnowledgeEntry`.
+Author markdown files for a Use Brian team knowledge base — the GitHub repo the sync worker mirrors into `knowledge_entries`. The assistant queries them via `searchKnowledge` / `browseKnowledge` / `readKnowledgeEntry`.
 
 This skill covers the **parser contract** (frontmatter, paths, wikilinks, sensitivity) and the **editorial decisions** that make the KB useful.
 
 ## Fast paths
 
-- **New KB:** [`sidanclaw/sidanclaw-kb-template`](https://github.com/sidanclaw/sidanclaw-kb-template) — click **Use this template** (or `gh repo create --template sidanclaw/sidanclaw-kb-template`). Edit the meta files, push, connect in team settings.
+- **New KB:** [`use-brian/brian-kb-template`](https://github.com/use-brian/brian-kb-template) — click **Use this template** (or `gh repo create --template use-brian/brian-kb-template`). Edit the meta files, push, connect in team settings.
 - **Ingest from any existing source** — a `docs/` tree, Notion, Confluence, Google Docs, Slack, pasted emails, whiteboard photos, meeting transcripts — use the Ingest workflow below. The model is the adapter; no source-specific tooling.
 
 ## Scope
 
-This skill does **not** run the sync worker, edit the DB directly (when a sync repo is connected, the repo is the source of truth), replace memories (those are per-user behavioral signal), wire repos (team settings), set assistant `clearance` (operator setting), or enforce emit guards — sidanclaw's sensitivity model is read-filter + write-stamp only, with no automatic "don't output confidential" protection. The operator wires audiences correctly.
+This skill does **not** run the sync worker, edit the DB directly (when a sync repo is connected, the repo is the source of truth), replace memories (those are per-user behavioral signal), wire repos (team settings), set assistant `clearance` (operator setting), or enforce emit guards — Use Brian's sensitivity model is read-filter + write-stamp only, with no automatic "don't output confidential" protection. The operator wires audiences correctly.
 
 Skip this skill when the user wants to save a personal preference (→ memory), use the KB tools as a reader (→ `docs/architecture/features/knowledge-base.md`), or configure sync (→ team settings).
 
@@ -179,7 +179,7 @@ Two entries pay for themselves many times over. The template ships starters — 
 
 ### 6. Audit
 
-Run `npx @sidanclaw/sidanclaw-kb lint <path>` (or `--json` / `--strict` in CI). The sync worker runs the same checks server-side and logs findings, so issues surface even without the CLI — but lint locally first to catch them before push. Manual spot-checks for anything lint doesn't cover:
+Run `npx @use-brian/sidanclaw-kb lint <path>` (or `--json` / `--strict` in CI). The sync worker runs the same checks server-side and logs findings, so issues surface even without the CLI — but lint locally first to catch them before push. Manual spot-checks for anything lint doesn't cover:
 
 - [ ] Every directory has an `index.md`
 - [ ] Every entry has `title`, `description`, `sensitivity`, ≥1 tag
@@ -231,7 +231,7 @@ last_reviewed: 2026-07-14          # when a human/agent last verified the distil
 > **Source:** [June Career Webinar (Google Docs)](https://docs.google.com/document/d/<fileId>/edit)
 ```
 
-The body line is load-bearing, not decoration: `readKnowledgeEntry` returns the entry **body**, so the visible Source line is what lets the assistant hand staff the original for further study ("the full deck is here"). Frontmatter-only pointers are invisible at read time. This mirrors the `> **Source of truth:**` convention in sidanclaw's own KB.
+The body line is load-bearing, not decoration: `readKnowledgeEntry` returns the entry **body**, so the visible Source line is what lets the assistant hand staff the original for further study ("the full deck is here"). Frontmatter-only pointers are invisible at read time. This mirrors the `> **Source of truth:**` convention in Use Brian's own KB.
 
 Rules:
 
@@ -254,7 +254,7 @@ Author one `drive-index.md` entry (or per-domain siblings for big corpora): the 
 
 ## Hygiene jobs
 
-One-shot audits. `kb lint` automates all of these against the filesystem; the in-chat equivalents use KB read tools (`browseKnowledge`, `readKnowledgeEntry`) against the live DB when running inside a sidanclaw session. Both paths are useful — CLI for CI, in-chat for ad-hoc.
+One-shot audits. `kb lint` automates all of these against the filesystem; the in-chat equivalents use KB read tools (`browseKnowledge`, `readKnowledgeEntry`) against the live DB when running inside a Use Brian session. Both paths are useful — CLI for CI, in-chat for ad-hoc.
 
 | Job | How |
 |---|---|

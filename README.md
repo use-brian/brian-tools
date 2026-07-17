@@ -1,6 +1,6 @@
 # sidanclaw-tools
 
-Community connectors and skills for [sidanclaw](https://sidan.ai).
+Community connectors and skills for [Use Brian](https://usebrian.ai).
 
 ```
 sidanclaw-tools/
@@ -11,8 +11,8 @@ sidanclaw-tools/
 
 ## Related repositories
 
-- [`sidanclaw/sidanclaw-kb-template`](https://github.com/sidanclaw/sidanclaw-kb-template) — GitHub template for a team knowledge base repo. Click **Use this template** to scaffold one.
-- [`@sidanclaw/sidanclaw-kb`](https://github.com/sidanclaw/sidanclaw/tree/main/packages/sidanclaw-kb) — shared parser + lint package, powering both the backend sync worker and the public `kb lint` CLI (`npx @sidanclaw/sidanclaw-kb lint ./my-team-kb`).
+- [`use-brian/brian-kb-template`](https://github.com/use-brian/brian-kb-template) — GitHub template for a team knowledge base repo. Click **Use this template** to scaffold one.
+- [`@use-brian/sidanclaw-kb`](https://github.com/use-brian/brian/tree/main/packages/sidanclaw-kb) — shared parser + lint package, powering both the backend sync worker and the public `kb lint` CLI (`npx @use-brian/sidanclaw-kb lint ./my-team-kb`).
 
 ---
 
@@ -27,7 +27,7 @@ Skills follow the [Agent Skills Spec](https://agentskills.io/specification). sid
 name: my-skill
 description: What this skill does and when to use it.
 license: MIT
-compatibility: Designed for sidanclaw
+compatibility: Designed for Use Brian
 metadata:
   author: your-name
   author_url: https://github.com/your-name
@@ -54,7 +54,7 @@ Instructions the assistant follows when this skill is activated...
 | `compatibility` | Environment requirements (max 500 chars) |
 | `allowed-tools` | Space-separated pre-approved tool names |
 
-### sidanclaw metadata extensions
+### Use Brian metadata extensions
 
 | Key | Description |
 |---|---|
@@ -73,7 +73,7 @@ Instructions the assistant follows when this skill is activated...
 name: daily-briefing
 description: Morning summary of calendar, emails, and tasks. Use when the user asks for a briefing or daily agenda.
 metadata:
-  author: sidanclaw
+  author: Use Brian
   category: productivity
   when_to_use: When the user asks for a briefing, morning summary, or daily agenda
   requires_connectors: gcal,gmail

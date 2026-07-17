@@ -2,9 +2,9 @@
 name: luma-discover
 description: Discover upcoming events on Luma (lu.ma) by city, category, or topic. Use when the user asks for meetups, events to attend, or community gatherings — especially in tech, AI, climate, crypto, arts, fitness, or food/drink. Returns event names with registration URLs the user opens to RSVP. Supports both a curated top-picks answer (default) and a comprehensive full-list mode when the user pushes for breadth.
 license: MIT
-compatibility: Designed for sidanclaw
+compatibility: Designed for Use Brian
 metadata:
-  author: sidanclaw
+  author: Use Brian
   category: research
   when_to_use: When the user asks "any AI/climate/crypto/tech meetups in <city>?", "what's happening on Luma this week?", "find events about <topic>", wants a "full list" / "everything on" for a city+topic, or asks for "more" after a curated answer. Skip when the user is asking about events they already RSVPed to (those flow through Google Calendar).
 ---
