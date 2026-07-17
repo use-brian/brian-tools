@@ -12,7 +12,7 @@ sidanclaw-tools/
 ## Related repositories
 
 - [`use-brian/brian-kb-template`](https://github.com/use-brian/brian-kb-template) — GitHub template for a team knowledge base repo. Click **Use this template** to scaffold one.
-- [`@use-brian/sidanclaw-kb`](https://github.com/use-brian/brian/tree/main/packages/sidanclaw-kb) — shared parser + lint package, powering both the backend sync worker and the public `kb lint` CLI (`npx @use-brian/sidanclaw-kb lint ./my-team-kb`).
+- [`@use-brian/sidanclaw-kb`](https://github.com/use-brian/use-brian/tree/main/packages/sidanclaw-kb) — shared parser + lint package, powering both the backend sync worker and the public `kb lint` CLI (`npx @use-brian/sidanclaw-kb lint ./my-team-kb`).
 
 ---
 
