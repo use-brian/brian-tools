@@ -179,7 +179,7 @@ Two entries pay for themselves many times over. The template ships starters — 
 
 ### 6. Audit
 
-Run `npx @use-brian/sidanclaw-kb lint <path>` (or `--json` / `--strict` in CI). The sync worker runs the same checks server-side and logs findings, so issues surface even without the CLI — but lint locally first to catch them before push. Manual spot-checks for anything lint doesn't cover:
+Run `npx @use-brian/brian-kb lint <path>` (or `--json` / `--strict` in CI). The sync worker runs the same checks server-side and logs findings, so issues surface even without the CLI — but lint locally first to catch them before push. Manual spot-checks for anything lint doesn't cover:
 
 - [ ] Every directory has an `index.md`
 - [ ] Every entry has `title`, `description`, `sensitivity`, ≥1 tag

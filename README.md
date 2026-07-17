@@ -1,9 +1,9 @@
-# sidanclaw-tools
+# brian-tools
 
 Community connectors and skills for [Use Brian](https://usebrian.ai).
 
 ```
-sidanclaw-tools/
+brian-tools/
 ├── connectors/              # MCP servers with connector.json
 ├── skills/                  # Agent Skills Spec skills
 └── README.md
@@ -12,13 +12,13 @@ sidanclaw-tools/
 ## Related repositories
 
 - [`use-brian/brian-kb-template`](https://github.com/use-brian/brian-kb-template) — GitHub template for a team knowledge base repo. Click **Use this template** to scaffold one.
-- [`@use-brian/sidanclaw-kb`](https://github.com/use-brian/use-brian/tree/main/packages/sidanclaw-kb) — shared parser + lint package, powering both the backend sync worker and the public `kb lint` CLI (`npx @use-brian/sidanclaw-kb lint ./my-team-kb`).
+- [`@use-brian/brian-kb`](https://github.com/use-brian/use-brian/tree/main/packages/brian-kb) — shared parser + lint package, powering both the backend sync worker and the public `kb lint` CLI (`npx @use-brian/brian-kb lint ./my-team-kb`).
 
 ---
 
 ## Skills
 
-Skills follow the [Agent Skills Spec](https://agentskills.io/specification). sidanclaw-specific extensions live under `metadata`.
+Skills follow the [Agent Skills Spec](https://agentskills.io/specification). Use Brian-specific extensions live under `metadata`.
 
 ### SKILL.md format
 
