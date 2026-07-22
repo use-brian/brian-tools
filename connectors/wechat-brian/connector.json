@@ -1,0 +1,10 @@
+{
+  "id": "wechat-brian",
+  "name": "WeChat Archive",
+  "description": "Search your archived WeChat conversation history. Semantic + keyword recall over an external, person-compartmented archive that runs on your own box.",
+  "mcp_url": "http://127.0.0.1:8787/mcp",
+  "auth_type": "api_key",
+  "author": "Use Brian",
+  "author_url": "https://usebrian.ai",
+  "tags": ["messaging", "wechat", "archive", "history", "on-prem"]
+}
