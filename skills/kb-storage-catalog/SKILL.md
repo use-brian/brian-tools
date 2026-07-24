@@ -86,7 +86,7 @@ Bytes to text is keyed on file type, identical across S3/GCS/local:
 |---|---|---|
 | txt / md / csv / html / code | read directly | capped text |
 | PDF (text layer) | PDF text extraction | capped text |
-| PDF (scanned) / image | OCR (optional; expensive) | OCR text, or metadata-only |
+| PDF (scanned) / image | vision-capable model reads page images / the image (enrichment pass), or OCR | model transcription, or metadata-only |
 | docx / xlsx / pptx | office parser to text | capped text |
 | audio / video / archives / opaque binary | none | metadata-only body (still findable by name/path/tags) |
 
@@ -96,7 +96,7 @@ Bytes to text is keyed on file type, identical across S3/GCS/local:
 
 **One session, one script, one sync at the end.** The digest is a batch grind (CPU-bound extraction), not reasoning work, so parallelize *inside* the cataloger with a **worker pool across cores** and a **resumable manifest** - do not fan out into multiple agents. Three reasons: the KB local sync is **full-rescan** (it re-reads every catalog file to hash it and re-upserts all entries on any change), so a sync firing mid-generation mirrors a half-written catalog and repeated syncs thrash it; a single script owns one manifest, so a crash resumes instead of N agents re-deriving state; and it's a `for`-loop-with-workers job that agent overhead only slows down. Generate the **whole** catalog into **one** directory first, then wire and sync the local source **once**. Shard the input only as worker partitions inside the script (or across worker *processes* for a very slow/large box), all writing into the one catalog dir. At the target scale (thousands, < 50k files) this is comfortably a single session.
 
-Reference implementation: [`references/cataloger.ts`](references/cataloger.ts) - implements the **local-disk backend** end to end (an S3/GCS backend swaps the walk/fetch for list+fetch calls, ~30 lines; everything downstream is unchanged). It runs out of the box producing a metadata + plain-text catalog, with the rich-file extractors stubbed for the local agent to wire to whatever libraries the box has. Its contract: resumable manifest, per-file failures logged (never fatal) and retried next run, stale entries for deleted files removed, per-directory wikilinked `index.md` tree regenerated every run so `kb lint` stays clean. **After wiring or changing extractors, bump `EXTRACTOR_VERSION`** (or pass `--force`) so already-cataloged files regenerate - otherwise the manifest skips them.
+Reference implementation: [`references/cataloger.ts`](references/cataloger.ts) - implements the **local-disk backend** end to end (an S3/GCS backend swaps the walk/fetch for list+fetch calls, ~30 lines; everything downstream is unchanged). Rich-file extraction is wired through **optional deps** with graceful metadata-only fallback: `.pdf` via `pdf-parse`, `.docx` via `mammoth`, `.doc` via `word-extractor`, `.xlsx`/`.xls` via `xlsx` (`npm i` only what the corpus needs). The Phase 2 enricher is built in: pass `--llm-base-url` + `--llm-model` (any OpenAI-compatible endpoint - a local Qwen behind Ollama/vLLM works) and the script has the model read each file's extracted text; **images and scanned PDFs** (rendered via poppler's `pdftoppm`) go to `--llm-vision-model`, which must be vision-capable. Its contract: resumable manifest (keyed on extractor version + enricher version + model, so config changes regenerate), per-file failures logged (never fatal) and retried next run - an enrichment failure still writes the mechanical entry and re-enriches on the next run - stale entries for deleted files removed, per-directory wikilinked `index.md` tree regenerated every run so `kb lint` stays clean. **After changing extractors bump `EXTRACTOR_VERSION`; after changing the enrichment contract bump `ENRICHER_VERSION`** (or pass `--force`) so already-cataloged files regenerate - otherwise the manifest skips them.
 
 ## Phase 1 - build the discovery catalog (no LLM)
 
@@ -132,7 +132,9 @@ source_sha256: 9f2c...
 
 ## Phase 2 - optional enrichment (LLM)
 
-Additive; the keyword catalog works without it. A pass over the entries fills better `description` + `tags` and, where valuable, distills durable facts into the body (the `kb-author` distill workflow). Apply selectively - it is model-dependent, so on an air-gapped box it needs a local model.
+Additive; the keyword catalog works without it. A pass over the entries fills better `description` + `tags` + `sensitivity` and, where valuable, distills durable facts into the body (the `kb-author` distill workflow). Apply selectively - it is model-dependent, so on an air-gapped box it needs a local model.
+
+The reference cataloger implements this pass **inline**: with the `--llm-*` flags set, each file gets one strict-JSON model call over its extracted text (validated, one retry, mechanical fallback on failure) inside the same resumable run - never by an agent reading files into its own context. Images and scanned PDFs are read by the vision model, which is what makes photo/scan corpora searchable at all. The system prompt forbids copying credentials found inside files into any field.
 
 ## Retrieving the originals (separate build)
 
