@@ -31,11 +31,11 @@ Every figure you use carries its source. A number with unknown provenance is a q
 
 ## The core move: profit-improvement diagnostic
 
-Full method in the statement-analysis and profit-levers references. In brief:
+Read [statement analysis](references/statement-analysis.md) and [profit levers](references/profit-levers.md) before running the full diagnostic. In brief:
 
 1. **Break costs down.** Categorize every line (COGS vs opex; people, marketing, tools, facilities, professional services, other; fixed vs variable; committed vs discretionary). Common-size as % of revenue. Pareto: the few lines carrying ~80% of cost are where levers live.
 2. **Find trends** (want 3+ periods). Any cost line outgrowing revenue for 2+ periods is a flag. Separate step changes (a decision to verify) from creep (drift to challenge). Track gross margin, opex ratio, net margin. Bridge profit between periods: what moved it.
-3. **Read hints into levers** on the tree: net profit = revenue (price x volume x mix) - COGS - opex. Cost-side levers are yours. Revenue-side levers you diagnose, then route: price to consult-offer, volume to consult-growth or consult-sales, mix and client selection to consult-strategy. If a sibling is missing, name the brian-tools kit and still sketch a starting direction.
+3. **Read hints into levers** on the tree: net profit = revenue (price x volume x mix) - COGS - opex. Cost-side levers are yours. Revenue-side levers you diagnose, then route: price to consult-offer, volume to consult-growth or [consult-sales](../consult-sales/SKILL.md), mix and client selection to consult-strategy. If a sibling is missing, name the brian-tools kit and still sketch a starting direction.
 4. **Rank and size, max three levers.** Show the arithmetic inline ("tools are 11% of revenue, grew 40% while revenue grew 10%; consolidating saves ~X/yr = Y points of margin"). Rate ease. A hint is a hypothesis: confirm with the user before it becomes a recommendation, because a jumped line may be deliberate investment.
 
 **No history?** Run the single-period breakdown (Pareto and concentration still work), then offer a monthly snapshot as a recurring workflow: the cadence creates the trend data, and the passes unlock in 2-3 months. Propose it through the normal confirmation flow, never silently.
@@ -44,9 +44,11 @@ Full method in the statement-analysis and profit-levers references. In brief:
 
 - Show every formula and substitution. Keep tables small; compute stepwise and invite the user to verify totals.
 - Never invent a benchmark or industry average. The client's own trend is the benchmark; external figures only with a citation (see the checkup skill's benchmarking method if imported).
-- Fundraising asks get two separate answers: fundable, and should you raise (fundraising-readiness reference).
+- For a unit-economics question, read [unit economics](references/unit-economics.md).
+- For cash or runway, read [cash flow and runway](references/cashflow-runway.md).
+- Fundraising asks get two separate answers: fundable, and should you raise. Read [fundraising readiness](references/fundraising-readiness.md) first.
 - "Can I afford this hire" is yours; "should I hire" routes to consult-people.
 
 ## Commit (on assent)
 
-Write "Consult: Finance - YYYY-MM-DD" using the finance-snapshot template (every consult) and the profit-improvement template (when the diagnostic ran), answer first. Save one memory: "Consulting takeaway (finance): <most important conclusion>". Create tasks for agreed actions only. Offer the recurring snapshot if not already set up.
+Answer first. Then write "Consult: Finance - YYYY-MM-DD" using the [finance snapshot](assets/templates/finance-snapshot.md) for every consult and the [profit-improvement plan](assets/templates/profit-improvement.md) when the diagnostic ran. Save one memory: "Consulting takeaway (finance): <most important conclusion>". Create tasks for agreed actions only. Offer the recurring snapshot if not already set up.

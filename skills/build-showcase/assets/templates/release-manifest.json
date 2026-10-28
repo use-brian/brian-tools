@@ -1,0 +1,72 @@
+{
+  "schema_version": "1.0",
+  "scenario_id": "replace-with-scenario-id",
+  "version": 1,
+  "profile": "gallery-landscape-v1",
+  "status": "candidate",
+  "data_kind": "synthetic",
+  "product_revision": "replace-with-tested-revision",
+  "verified_at": "YYYY-MM-DD",
+  "files": {
+    "master": {
+      "path": "release/v1/master.webm",
+      "sha256": "replace-with-sha256"
+    },
+    "video": {
+      "path": "release/v1/showcase.mp4",
+      "sha256": "replace-with-sha256"
+    },
+    "poster": {
+      "path": "release/v1/poster.png",
+      "sha256": "replace-with-sha256"
+    },
+    "captions": {
+      "path": "release/v1/captions.vtt",
+      "sha256": "replace-with-sha256"
+    }
+  },
+  "video": {
+    "duration_seconds": 12,
+    "width": 1920,
+    "height": 1080,
+    "fps": 30,
+    "codec": "h264",
+    "pixel_format": "yuv420p",
+    "audio_policy": "silent"
+  },
+  "labels": {
+    "evidence_label": "SYNTHETIC DEMO",
+    "evidence_label_visible": true,
+    "captions_complete": true,
+    "causal_order_preserved": true,
+    "hero_hold_seconds": 2.5,
+    "mobile_card_legible": true
+  },
+  "reviews": {
+    "product": {
+      "decision": "approved",
+      "reviewer": "replace-with-name",
+      "reviewed_at": "YYYY-MM-DD"
+    },
+    "privacy": {
+      "decision": "approved",
+      "reviewer": "replace-with-name",
+      "reviewed_at": "YYYY-MM-DD"
+    },
+    "claims": {
+      "decision": "approved",
+      "reviewer": "replace-with-name",
+      "reviewed_at": "YYYY-MM-DD"
+    },
+    "release": {
+      "decision": "pending",
+      "reviewer": null,
+      "reviewed_at": null
+    }
+  },
+  "catalog": {
+    "record_path": "showcase-record.md",
+    "video_url": null,
+    "poster_url": null
+  }
+}

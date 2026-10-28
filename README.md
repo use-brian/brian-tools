@@ -86,13 +86,53 @@ When activated, gather the user's day at a glance:
 3. Present as a concise summary with 3-5 bullet points
 ```
 
+### Native bundle shape
+
+Every skill is a portable folder. `SKILL.md` is the small entry point; ordinary
+relative Markdown links make supporting material discoverable without loading
+it eagerly.
+
+```text
+skills/my-skill/
+├── SKILL.md
+├── references/          # Detailed methods and domain knowledge
+├── assets/              # Templates and files used in output
+│   └── templates/
+└── scripts/             # Text-backed helper source (not executed by Brian)
+```
+
+State when a resource should be read and link it directly, for example:
+
+```markdown
+Before scoring the business, read the [diagnostic questions](references/diagnostic-questions.md).
+Create the final page from the [scorecard](assets/templates/scorecard.md).
+Hand pipeline work to [consult-sales](../consult-sales/SKILL.md).
+```
+
+`references/`, `assets/`, and `scripts/` are native. `templates/` remains an
+import-compatible legacy alias, but new templates belong under
+`assets/templates/`.
+
 ### Progressive disclosure
 
 1. **Listing** (~100 tokens): `name` + `description` shown each turn
 2. **Activation** (< 5000 tokens): Full body loaded when the model invokes `useSkill`
-3. **Resources**: Files in `references/` loaded on demand
+3. **Resource index**: Paths, kinds, and descriptions exposed after activation
+4. **Resource read/search**: Only the relevant linked files loaded on demand
 
 Keep `SKILL.md` under 500 lines.
+
+### Validate and import
+
+Run `node validate-skills.mjs` before submitting a skill. It rejects missing
+links, orphaned resources, broken cross-skill dependencies, invalid metadata,
+and oversized roots.
+
+Use Brian discovers this repository as its native catalog when it is checked
+out next to `brian-platform`. A catalog install copies the complete bundle into
+the workspace. GitHub import accepts either the skill folder or its `SKILL.md`
+and preserves the same paths and source digest; no pointer appendix or body
+rewrite is needed.
 
 ---
 

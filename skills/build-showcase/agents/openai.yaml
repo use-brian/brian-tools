@@ -1,0 +1,4 @@
+interface:
+  display_name: "Build Showcase"
+  short_description: "Prepare, revise, and validate Brian showcases"
+  default_prompt: "Use $build-showcase to prepare or revise a safe, evidence-labelled Brian showcase and package it for review."
